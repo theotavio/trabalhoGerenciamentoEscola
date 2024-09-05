@@ -14,13 +14,11 @@ public final class MensagensErro{
     public static final String CPF_VAZIO = "O campo CPF precisa ser preenchido.";
     public static final String CPF_REGISTRADO = "Esse CPF já foi registrado.";
     public static final String ENDERECO_VAZIO = "O campo endereço precisa ser preenchido.";
-    public static final String NUM_MINISTRADAS = "O número de aulas ministradas não pode ser menor que zero";
     public static final String NUM_SALA = "O número da sala não pode ser menor ou igual a zero";
     public static final String NUM_CAPACIDADE_SALA = "A capacidade da sala não pode ser menor que zero";
-    public static final String NUM_TURMAS_SALA = "O número de turmas nas salas não pode ser menor que zero";
     public static final String ANO_TURMA = "O ano da turma não pode ser menor ou igual a zero";
-    public static final String NUM_ALUNOS_TURMA = "O número de alunos na turma não pode ser menor que zero";
     public static final String CURSO_VAZIO = "O campo curso precisa ser preenchido.";
+    public static final String CAPACIDADE_SALA = "A capacidade da sala excedida.";
 
     // Construtor privado para garantir que nenhuma instância seja criada
     private MensagensErro(){}

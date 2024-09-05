@@ -16,6 +16,7 @@ public class ArquivoInfo{
                     writer.println(p.getNome());
                     writer.println(p.getCpf());
                     writer.println(p.getNumeroAulasMinistradas());
+                    writer.println(p.getNumeroProfessores());
                 }
 
                 ArrayList<Aluno> alunos = e.getAlunos();
@@ -25,6 +26,7 @@ public class ArquivoInfo{
                     writer.println(a.getCpf());
                     writer.println(a.getMatricula());
                     writer.println(a.getIdade());
+                    writer.println(a.getNumeroAlunos());
                 }
 
                 ArrayList<Sala> salas = e.getSalas();
@@ -33,6 +35,7 @@ public class ArquivoInfo{
                     writer.println(s.getNumero());
                     writer.println(s.getCapacidadeSala());
                     writer.println(s.getNumeroDeTurmas());
+                    writer.println(s.getNumeroSalas());
                 }
             }
         }
@@ -57,7 +60,11 @@ public class ArquivoInfo{
                     String nomeProfessor = reader.readLine();
                     String cpf = reader.readLine();
                     int numAulas = Integer.parseInt(reader.readLine());
-                    escola.getProfessores().add(new Professor(nomeProfessor, cpf, numAulas));
+                    int numeroProfessores = Integer.parseInt(reader.readLine());
+
+                    Professor professor = new Professor(nomeProfessor, cpf);
+                    professor.setNumeroProfessores(numeroProfessores);
+                    escola.getProfessores().add(professor);
                 }
 
                 int qtdeAlunos = Integer.parseInt(reader.readLine());
@@ -66,7 +73,11 @@ public class ArquivoInfo{
                     String cpf = reader.readLine();
                     int matricula = Integer.parseInt(reader.readLine());
                     int idade = Integer.parseInt(reader.readLine());
-                    escola.getAlunos().add(new Aluno(nomeAluno, cpf, matricula, idade));
+                    int numeroAlunos = Integer.parseInt(reader.readLine());
+
+                    Aluno aluno = new Aluno(nomeAluno, cpf,  matricula, idade);
+                    aluno.setNumeroAlunos(numeroAlunos);
+                    escola.getAlunos().add(aluno);
                 }
 
                 int qtdeSalas = Integer.parseInt(reader.readLine());
@@ -74,7 +85,12 @@ public class ArquivoInfo{
                     int numero = Integer.parseInt(reader.readLine());
                     int capacidade = Integer.parseInt(reader.readLine());
                     int numeroDeTurmas = Integer.parseInt(reader.readLine());
-                    escola.getSalas().add(new Sala(numero, capacidade, numeroDeTurmas));
+                    int numeroSalas = Integer.parseInt(reader.readLine());
+
+                    Sala sala = new Sala(numero, capacidade);
+                    sala.setNumeroSalas(numeroSalas);
+                    sala.setNumeroDeTurmas(numeroDeTurmas);
+                    escola.getSalas().add(sala);
                 }
                 escolas.add(escola);
             }
