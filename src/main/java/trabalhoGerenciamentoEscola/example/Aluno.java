@@ -1,15 +1,15 @@
 package trabalhoGerenciamentoEscola.example;
 import java.util.ArrayList;
 
-public class Aluno extends Pessoa{
+public class Aluno extends Pessoa {
     // Atributos
     private int matricula;
     private int idade;
     private int numeroAlunos;
-    private ArrayList<Turma> turmas = new ArrayList<>();
+    private ArrayList<Turma> turmas;
 
     // Construtor com as devidas verificações
-    public Aluno(String nome, String cpf, int matricula, int idade){
+    public Aluno(String nome, String cpf, int matricula, int idade) {
         super(nome, cpf);
         if (matricula <= 0)
             MensagensErro.adicionarErro(MensagensErro.MATRICULA_INVALIDA);
@@ -20,20 +20,21 @@ public class Aluno extends Pessoa{
             throw new IllegalArgumentException(String.join("\n ", MensagensErro.getErros()));
         this.matricula = matricula;
         this.idade = idade;
+        this.turmas = new ArrayList<>();
     }
 
     // Metodo toString
     @Override
-    public String toString(){
+    public String toString() {
         return "Nome: " + getNome() + "\nCPF: " + formatarCpf(getCpf()) + "\nMatricula: " + "2024" + getMatricula() + "\nIdade: " + getIdade();
     }
 
     // Get e set de matrícula com as devidas verificações
-    public int getMatricula(){
+    public int getMatricula() {
         return matricula;
     }
 
-    public void setMatricula(int matricula){
+    public void setMatricula(int matricula) {
         if (matricula <= 0)
             MensagensErro.adicionarErro(MensagensErro.MATRICULA_INVALIDA);
 
@@ -43,11 +44,11 @@ public class Aluno extends Pessoa{
     }
 
     // Get e set de idade com as devidas verificações
-    public int getIdade(){
+    public int getIdade() {
         return idade;
     }
 
-    public void setIdade(int idade){
+    public void setIdade(int idade) {
         if (idade < 0)
             MensagensErro.adicionarErro(MensagensErro.IDADE_INVALIDA);
 
@@ -57,24 +58,28 @@ public class Aluno extends Pessoa{
     }
 
     // Get e set de numero de alunos
-    public int getNumeroAlunos(){
+    public int getNumeroAlunos() {
         return numeroAlunos;
     }
 
-    public void setNumeroAlunos(int numeroAlunos){
+    public void setNumeroAlunos(int numeroAlunos) {
         this.numeroAlunos = numeroAlunos;
     }
 
     // Metodo para formatar o CPF
-    private String formatarCpf(String cpf){
-        return cpf.substring(0, 3) + "." +  cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
+    private String formatarCpf(String cpf) {
+        return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
     }
 
-    // Metodo e get de Turma
+    // Metodo para associar uma turma ao aluno
     public void adicionarTurma(Turma turma){
-        turmas.add(turma);
+        if (!turmas.contains(turma)) {
+            turmas.add(turma);
+            turma.adicionarAluno(this);  // Atualiza a turma para incluir o aluno
+        }
     }
 
+    // Get do array de turmas
     public ArrayList<Turma> getTurmas(){
         return turmas;
     }

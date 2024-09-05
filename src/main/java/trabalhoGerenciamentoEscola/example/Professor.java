@@ -5,11 +5,12 @@ public class Professor extends Pessoa{
     // Atributos
     private int numeroAulasMinistradas;
     private int numeroProfessores;
-    private ArrayList<Turma> turmas = new ArrayList<Turma>();
+    private ArrayList<Turma> turmas;
 
     // Construtor com as devidas verificações
     public Professor(String nome, String cpf){
         super(nome, cpf);
+        this.turmas = new ArrayList<>();
     }
 
     // Metodo toString
@@ -41,13 +42,11 @@ public class Professor extends Pessoa{
         return cpf.substring(0, 3) + "." +  cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
     }
 
-    // Metodo e get de turma
+    // Metodo para associar uma turma ao professor
     public void adicionarTurma(Turma turma){
-        turmas.add(turma);
-        this.numeroAulasMinistradas++;
-    }
-
-    public ArrayList<Turma> getTurmas(){
-        return turmas;
+        if (!turmas.contains(turma)){
+            turmas.add(turma);
+            turma.setProfessor(this);
+        }
     }
 }

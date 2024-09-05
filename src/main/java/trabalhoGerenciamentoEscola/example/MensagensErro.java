@@ -12,13 +12,15 @@ public final class MensagensErro{
     public static final String MATRICULA_INVALIDA = "Matricula não pode ser menor ou igual a zero.";
     public static final String NOME_VAZIO = "O campo nome precisa ser preenchido.";
     public static final String CPF_VAZIO = "O campo CPF precisa ser preenchido.";
-    public static final String CPF_REGISTRADO = "Esse CPF já foi registrado.";
     public static final String ENDERECO_VAZIO = "O campo endereço precisa ser preenchido.";
     public static final String NUM_SALA = "O número da sala não pode ser menor ou igual a zero";
     public static final String NUM_CAPACIDADE_SALA = "A capacidade da sala não pode ser menor que zero";
     public static final String ANO_TURMA = "O ano da turma não pode ser menor ou igual a zero";
     public static final String CURSO_VAZIO = "O campo curso precisa ser preenchido.";
     public static final String CAPACIDADE_SALA = "A capacidade da sala excedida.";
+    public static final String SALA_CHEIA = "A sala está cheia";
+    public static final String SALA_ERRO = "Sala lotada ou aluno já matrículado";
+    public static final String TURMA_PROFESSOR = "A turma já possui um professor.";
 
     // Construtor privado para garantir que nenhuma instância seja criada
     private MensagensErro(){}

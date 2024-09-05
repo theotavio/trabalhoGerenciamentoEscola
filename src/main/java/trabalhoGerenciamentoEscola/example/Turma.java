@@ -6,8 +6,9 @@ public class Turma{
     private String curso;
     private int anoTurma;
     private int numeroAlunos;
-    private Professor professor;
     private Sala sala;
+    private Professor professor;
+    private ArrayList<Aluno> alunos;
     private ArrayList<Horario> horarios = new ArrayList<>();
 
     // Construtor
@@ -23,6 +24,7 @@ public class Turma{
 
         this.curso = curso;
         this.anoTurma = anoTurma;
+        this.alunos = new ArrayList<>();
     }
 
     // Getters e Setters
@@ -56,6 +58,12 @@ public class Turma{
         MensagensErro.limparErros();
     }
 
+    @Override
+    public String toString() {
+        return "Curso: " + getCurso() + "\nAno: " + getAnoTurma() + "\nNumero de Alunos: " + getNumeroAlunos();
+    }
+
+
     public int getNumeroAlunos(){
         return numeroAlunos;
     }
@@ -68,25 +76,6 @@ public class Turma{
     public void TempoAulaSemanaMinutos(){
     }
 
-    // Get e set de professor
-    public void setProfessor(Professor professor){
-        this.professor = professor;
-        professor.adicionarTurma(this);  // Associando a turma ao professor
-    }
-
-    public Professor getProfessor(){
-        return professor;
-    }
-
-    // Get e set de sala
-    public void setSala(Sala sala){
-        this.sala = sala;
-    }
-
-    public Sala getSala(){
-        return sala;
-    }
-
     // Metodo e get de horário
     public void adicionarHorario(Horario horario){
         horarios.add(horario);
@@ -96,13 +85,40 @@ public class Turma{
         return horarios;
     }
 
+    // Set e get de sala
+    public void setSala(Sala sala){
+        this.sala = sala;
+    }
+
+    public Sala getSala(){
+        return  sala;
+    }
+
+    // Set e get de professor
+    public void setProfessor(Professor professor){
+        this.professor = professor;
+    }
+
+    public Professor getProfessor(){
+        return professor;
+    }
+
     // Metodo para adicionar aluno a turma
     public void adicionarAluno(Aluno aluno){
-        if (sala != null && sala.getCapacidadeSala() > numeroAlunos){
+        if (!alunos.contains(aluno) && sala.getCapacidadeSala() > numeroAlunos){
+            alunos.add(aluno);
             numeroAlunos++;
-            aluno.adicionarTurma(this);
         }
-        else
-            System.out.println("Sala lotada ou não alocada.");
+        else{
+            MensagensErro.adicionarErro(MensagensErro.SALA_ERRO);
+            if (!MensagensErro.getErros().isEmpty())
+                throw new IllegalArgumentException(String.join(" ", MensagensErro.getErros()));
+            MensagensErro.limparErros();
+        }
+    }
+
+    // Get do array de alunos
+    public ArrayList<Aluno> getAlunos(){
+        return alunos;
     }
 }

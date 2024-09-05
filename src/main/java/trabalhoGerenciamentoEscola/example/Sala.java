@@ -7,7 +7,7 @@ public class Sala{
     private int capacidadeSala;
     private int numeroDeTurmas;
     private int numeroSalas;
-    private ArrayList<Turma> turmas  = new ArrayList<>();
+    private ArrayList<Turma> turmas;
 
     // Construtor com as devidas verificações
     public Sala(int numero, int capacidadeSala){
@@ -20,6 +20,7 @@ public class Sala{
             throw new IllegalArgumentException(String.join("\n ", MensagensErro.getErros()));
         this.numero = numero;
         this.capacidadeSala = capacidadeSala;
+        this.turmas = new ArrayList<>();
     }
 
     // Metodo toString
@@ -81,12 +82,16 @@ public class Sala{
             turma.setSala(this);
             this.numeroDeTurmas++;
         }
-        else
-            System.out.println("Capacidade da sala excedida.");
+        else{
+            MensagensErro.adicionarErro(MensagensErro.CAPACIDADE_SALA);
+            if (!MensagensErro.getErros().isEmpty())
+                throw new IllegalArgumentException(String.join("\n ", MensagensErro.getErros()));
+            MensagensErro.limparErros();
+        }
     }
 
     // Get do array de turmas
-    public ArrayList<Turma> getTurmas() {
+    public ArrayList<Turma> getTurmas(){
         return turmas;
     }
 }

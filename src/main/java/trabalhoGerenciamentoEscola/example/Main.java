@@ -25,14 +25,21 @@ public class Main{
             opcao = input.nextInt();
 
             switch(opcao){
-                case 1 -> criarEscolas();
-                case 2 -> gerenciarEscola();
-                case 3 -> removerEscola();
-                case 4 -> {
+                case 1:
+                    criarEscolas();
+                    break;
+                case 2:
+                    gerenciarEscola();
+                    break;
+                case 3:
+                    removerEscola();
+                    break;
+                case 4:
                     System.out.println("Saindo...");
                     System.exit(0);
-                }
-                default -> System.out.println("Opção Inválida!");
+                default:
+                    System.out.println("Opção Inválida!");
+                    break;
             }
         }
         while(opcao != 4);
@@ -158,30 +165,209 @@ public class Main{
         System.out.println("2 - Listar professores.");
         System.out.println("3 - Adicionar sala.");
         System.out.println("4 - Adicionar alunos");
-        System.out.println("5 - Listar alunos");
-        System.out.println("6 - Remover algo da escola.");
-        System.out.println("7 - Voltar ao menu anterior.");
-        System.out.println("8 - Sair");
+        System.out.println("5 - Listar alunos.");
+        System.out.println("6 -Adicionar turmas.");
+        System.out.println("7 - Menu alocação.");
+        System.out.println("8 - Remover algo da escola.");
+        System.out.println("9 - Voltar ao menu anterior.");
+        System.out.println("10 - Sair");
         System.out.print("\nEscolha uma opção: ");
     }
 
     // Metodo para gerenciar as escolhas do menu
     private static void opcoesGerenciamento(Escola escola, int opcao){
         switch(opcao){
-            case 1 -> escola.adicionarProfessores();
-            case 2 -> escola.listarProfessores();
-            case 3 -> escola.adicionarSala();
-            case 4 -> escola.adicionarAlunos();
-            case 5 -> escola.listarAlunos();
-            case 6 -> menuRemocao(escola);
-            case 7 -> menuPrincipal();
-            case 8 -> {
+            case 1:
+                escola.adicionarProfessores();
+                break;
+            case 2:
+                escola.listarProfessores();
+                break;
+            case 3:
+                escola.adicionarSala();
+                break;
+            case 4:
+                escola.adicionarAlunos();
+                break;
+            case 5:
+                escola.listarAlunos();
+                break;
+            case 6:
+                escola.adicionarTurmas();
+                break;
+            case 7:
+                menuAlocacao(escola);
+                break;
+            case 8:
+                menuRemocao(escola);
+                break;
+            case 9:
+                menuPrincipal();
+                break;
+            case 10:
                 System.out.println("Saindo...");
                 System.exit(0);
-            }
-            default -> System.out.println("\nOpção Inválida\n");
+            default:
+                System.out.println("\nOpção Inválida\n");
+                break;
         }
     }
+
+    // Metodo para mostrar o menu de alocação de uma escola especifica
+    private static void menuAlocacao(Escola escola){
+        Scanner input = new Scanner(System.in);
+        int opcao;
+
+        do{
+            mostrarMenuAlocacao();
+            opcao = input.nextInt();
+            opcoesAlocacao(escola, opcao);
+        }
+        while(opcao != 5 && opcao != 6);
+    }
+
+    // Metodo para mostrar o menu de alocação de uma escola específica
+    private static void mostrarMenuAlocacao(){
+        System.out.println("\n\tMenu de Alocacao.");
+        System.out.println("\n1 - Alocar Turma em sala.");
+        System.out.println("2 - Alocar Aluno em Turma");
+        System.out.println("3 - Alocar Professor em Turma.");
+        System.out.println("4 - Listar Alocações");
+        System.out.println("5 - Voltar ao menu anterior");
+        System.out.println("6 - Sair");
+        System.out.print("\nEscolha uma opção: ");
+    }
+
+    // Metodo para gerenciar as opções do Menu de alocação
+    private static void opcoesAlocacao(Escola escola, int opcao){
+        switch(opcao){
+            case 1:
+                Scanner input = new Scanner(System.in);
+                alocarTurmaEmSala(escola);
+                break;
+            case 2:
+                alocarAlunoEmTurma(escola);
+                break;
+            case 3:
+                alocarProfessorEmTurma(escola);
+                break;
+            case 4:
+                break;
+            case 5:
+                menuGerenciamentoEscola(escola);
+                break;
+            case 6:
+                System.out.println("Saindo...");
+                System.exit(0);
+            default:
+                System.out.println("Opção Inválida!");
+                break;
+        }
+    }
+
+    private static void alocarTurmaEmSala(Escola escola){
+        Scanner input = new Scanner(System.in);
+        ArrayList<Turma> turmas = escola.getTurmas();
+
+        escola.listarTurmas();
+
+        System.out.print("\nEscolha uma turma para alocar em uma sala:");
+        int indiceTurma = input.nextInt() - 1;
+
+        if (indiceTurma < 0 || indiceTurma >= turmas.size()){
+            System.out.println("Opção Inválida.");
+            return;
+        }
+
+        Turma turmaSelecionada = turmas.get(indiceTurma);
+
+        ArrayList<Sala> salas = escola.getSalas();
+
+        escola.listarSalas();
+
+        System.out.print("\nEscolha uma sala para alocar a turma:");
+        int indiceSala = input.nextInt();
+
+        if (indiceSala < 0 || indiceSala >= salas.size()){
+            System.out.println("Opção Inválida.");
+            return;
+        }
+
+        Sala salaSelecionada = salas.get(indiceSala);
+        escola.alocarTurmaEmSala(turmaSelecionada, salaSelecionada);
+    }
+
+    private static void alocarAlunoEmTurma(Escola escola){
+        Scanner input = new Scanner(System.in);
+        ArrayList<Aluno> alunos = escola.getAlunos();
+
+        escola.listarAlunos();
+
+        System.out.print("\nEscolha um aluno para alocar em uma turma:");
+        int indiceAluno = input.nextInt();
+
+        if (indiceAluno < 0 || indiceAluno >= alunos.size()){
+            System.out.println("Opção Inválida.");
+            return;
+        }
+
+        Aluno alunoSelecionado = alunos.get(indiceAluno);
+
+        ArrayList<Turma> turmas = escola.getTurmas();
+
+        escola.listarTurmas();
+
+        if (turmas.isEmpty()){
+            System.out.println("Não há turmas cadastradas.");
+            return;
+        }
+
+        System.out.print("\nEscolha uma turma para alocar o aluno:");
+        int indiceTurma = input.nextInt();
+
+        if (indiceTurma < 0 || indiceTurma >= turmas.size()) {
+            System.out.println("Opção Inválida.");
+            return;
+        }
+
+        Turma turmaSelecionada = turmas.get(indiceTurma);
+        escola.alocarAlunoEmTurma(alunoSelecionado, turmaSelecionada);
+    }
+
+    private static void alocarProfessorEmTurma(Escola escola){
+        Scanner input = new Scanner(System.in);
+        ArrayList<Professor> professores = escola.getProfessores();
+
+        escola.listarProfessores();
+
+        System.out.print("\nEscolha um professor para alocar em uma turma:");
+        int indiceProfessor = input.nextInt();
+
+        if (indiceProfessor < 0 || indiceProfessor >= professores.size()){
+            System.out.println("Opção Inválida.");
+            return;
+        }
+
+        Professor professorSelecionado = professores.get(indiceProfessor);
+
+        ArrayList<Turma> turmas = escola.getTurmas();
+
+        escola.listarTurmas();
+
+        System.out.print("\nEscolha uma turma para alocar o professor:");
+        int indiceTurma = input.nextInt();
+
+        if (indiceTurma < 0 || indiceTurma >= turmas.size()){
+            System.out.println("Opção Inválida.");
+            return;
+        }
+
+        Turma turmaSelecionada = turmas.get(indiceTurma);
+
+        // Agora aloca o professor na turma selecionada chamando o método da escola
+        escola.alocarProfessorEmTurma(professorSelecionado, turmaSelecionada);
+    }
+
 
     // Metodo para mostrar o menu de remoção de uma escola específica
     private static void menuRemocao(Escola escola){
@@ -202,23 +388,36 @@ public class Main{
         System.out.println("\n1 - Remover professor");
         System.out.println("2 - Remover sala");
         System.out.println("3 - Remover aluno");
-        System.out.println("4 - Voltar ao menu anterior");
-        System.out.println("5 - Sair");
+        System.out.println("4 - Remover turma");
+        System.out.println("5 - Voltar ao menu anterior");
+        System.out.println("6 - Sair");
         System.out.print("\nEscolha uma opção: ");
     }
 
     // Metodo para gerenciar as opções do Menu de Remoção
     private static void opcoesRemocao(Escola escola, int opcao){
         switch(opcao){
-            case 1 -> removerItem("Professor", escola.getProfessores());
-            case 2 -> removerItem("Sala", escola.getSalas());
-            case 3 -> removerItem("Aluno", escola.getAlunos());
-            case 4 -> menuGerenciamentoEscola(escola);
-            case 5 -> {
+            case 1:
+                removerItem("Professor", escola.getProfessores());
+                break;
+            case 2:
+                removerItem("Sala", escola.getSalas());
+                break;
+            case 3:
+                removerItem("Aluno", escola.getAlunos());
+                break;
+            case 4:
+                removerItem("Turma", escola.getTurmas());
+                break;
+            case 5:
+                menuGerenciamentoEscola(escola);
+                break;
+            case 6:
                 System.out.println("Saindo...");
                 System.exit(0);
-            }
-            default -> System.out.println("Opção Inválida!");
+            default:
+                System.out.println("Opção Inválida!");
+                break;
         }
     }
 

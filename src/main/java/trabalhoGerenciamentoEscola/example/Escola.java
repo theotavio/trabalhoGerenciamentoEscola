@@ -6,9 +6,10 @@ public class Escola{
     // Atributos
     private String nome;
     private String endereco;
-    private final ArrayList<Professor> professores = new ArrayList<>();
-    private final ArrayList<Aluno> alunos = new ArrayList<>();
-    private final ArrayList<Sala> salas = new ArrayList<>();
+    private ArrayList<Professor> professores = new ArrayList<>();
+    private ArrayList<Aluno> alunos = new ArrayList<>();
+    private ArrayList<Sala> salas = new ArrayList<>();
+    private ArrayList<Turma> turmas = new ArrayList<>();
     private static final String ARQUIVO_ESCOLAS = "escolas.txt";
 
     // Construtor com as devidas verificações
@@ -41,6 +42,10 @@ public class Escola{
 
     public ArrayList<Aluno> getAlunos(){
         return alunos;
+    }
+
+    public ArrayList<Turma> getTurmas(){
+        return turmas;
     }
 
     // Get e set de nome com as devidas verificações
@@ -87,11 +92,12 @@ public class Escola{
 
         input.nextLine();
 
+        int i = 0, aux = 0;
         while(!valido){
             try{
                 MensagensErro.limparErros();
 
-                for(int i = 0; i < qtde; i++){
+                for(i = aux; i < qtde; i++){
                     System.out.print("\nDigite o nome do professor: ");
                     String nome = input.nextLine();
 
@@ -102,6 +108,7 @@ public class Escola{
                     professores.add(new Professor(nome, cpf));
                     atualizarNumeroProfessores();
                     Main.salvarEscolas();
+                    aux++;
                 }
                 valido = true;
             }
@@ -148,11 +155,12 @@ public class Escola{
 
         input.nextLine();
 
+        int i = 0, aux = 0;
         while(!valido){
             try {
                 MensagensErro.limparErros();
 
-                for(int i = 0; i < qtde; i++){
+                for(i = aux; i < qtde; i++){
                     System.out.print("\nDigite o numero da sala: ");
                     int numero = input.nextInt();
 
@@ -160,7 +168,9 @@ public class Escola{
                     int capacidade = input.nextInt();
 
                     salas.add(new Sala(numero, capacidade));
+                    atualizarNumeroSalas();
                     Main.salvarEscolas();
+                    aux++;
                 }
                 valido = true;
             }
@@ -207,11 +217,12 @@ public class Escola{
 
         input.nextLine();
 
+        int i = 0, aux = 0;
         while(!valido){
             try{
                 MensagensErro.limparErros();
 
-                for(int i = 0; i < qtde; i++){
+                for(i = aux; i < qtde; i++){
                     System.out.print("\nDigite o nome do aluno: ");
                     String nome = input.nextLine();
 
@@ -225,9 +236,12 @@ public class Escola{
                     int idade = input.nextInt();
                     System.out.println();
 
+                    input.nextLine();
+
                     alunos.add(new Aluno(nome, cpf, matricula, idade));
                     atualizarNumeroAlunos();
                     Main.salvarEscolas();
+                    aux++;
                 }
                 valido = true;
             }
@@ -257,5 +271,99 @@ public class Escola{
                 System.out.println("Número de alunos: " + aluno.getNumeroAlunos());
                 indice++;
             }
+    }
+
+    //  Metodo para adicionar turmas na escola
+    public void adicionarTurmas(){
+        Scanner input = new Scanner(System.in);
+        boolean valido = false;
+
+        System.out.print("\nQuantas turmas você quer adicionar?: ");
+        int qtde = input.nextInt();
+
+        if(qtde < 0){
+            System.out.println("Opção inválida!");
+            return;
+        }
+
+        input.nextLine();
+
+        int i = 0, aux = 0;
+        while(!valido){
+            try{
+                MensagensErro.limparErros();
+
+                for(i = aux; i < qtde; i++){
+                    System.out.print("\nDigite o curso da turma: ");
+                    String curso = input.nextLine();
+
+                    System.out.print("Digite o ano da turma: ");
+                    int ano = input.nextInt();
+                    System.out.println();
+
+                    input.nextLine();
+
+                    turmas.add(new Turma(curso, ano));
+                    Main.salvarEscolas();
+                    aux++;
+                }
+                valido = true;
+            }
+            catch(IllegalArgumentException e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    // Metodo para listar todas as salas da escola
+    public void listarTurmas(){
+        int indice = 1;
+
+        System.out.println("\nLista de Turmas:");
+
+        if (turmas.isEmpty())
+            System.out.println("Nenhuma turma foi adicionada.");
+        else
+            for (Turma turma : turmas) {
+                System.out.println("\nTurma" + " [" + indice + "]\n" + turma);
+                indice++;
+            }
+    }
+
+    // Metodo para alocar uma turma em uma sala
+    public void alocarTurmaEmSala(Turma turma, Sala sala){
+        if (sala.getTurmas().size() < sala.getCapacidadeSala())
+            sala.adicionarTurma(turma);
+        else{
+            MensagensErro.adicionarErro(MensagensErro.SALA_CHEIA);
+            if (!MensagensErro.getErros().isEmpty())
+                throw new IllegalArgumentException(String.join(" ", MensagensErro.getErros()));
+            MensagensErro.limparErros();
+        }
+    }
+
+    // Metodo para alocar aluno em turma
+    public void alocarAlunoEmTurma(Aluno aluno, Turma turma) {
+        if (turma.getSala().getCapacidadeSala() > turma.getAlunos().size()) {
+            aluno.adicionarTurma(turma);  // Adiciona a turma ao aluno e o aluno à turma
+        }
+        else{
+            MensagensErro.adicionarErro(MensagensErro.SALA_ERRO);
+            if (!MensagensErro.getErros().isEmpty())
+                throw new IllegalArgumentException(String.join(" ", MensagensErro.getErros()));
+            MensagensErro.limparErros();
+        }
+    }
+
+    // Metodo para alocar um professor a uma turma
+    public void alocarProfessorEmTurma(Professor professor, Turma turma){
+        if (turma.getProfessor() == null)
+            professor.adicionarTurma(turma);
+        else{
+            MensagensErro.adicionarErro(MensagensErro.TURMA_PROFESSOR);
+            if (!MensagensErro.getErros().isEmpty())
+                throw new IllegalArgumentException(String.join(" ", MensagensErro.getErros()));
+            MensagensErro.limparErros();
+        }
     }
 }
