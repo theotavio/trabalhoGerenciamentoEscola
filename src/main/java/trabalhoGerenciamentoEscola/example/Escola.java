@@ -10,7 +10,7 @@ public class Escola{
     private ArrayList<Aluno> alunos = new ArrayList<>();
     private ArrayList<Sala> salas = new ArrayList<>();
     private ArrayList<Turma> turmas = new ArrayList<>();
-    private static final String ARQUIVO_ESCOLAS = "escolas.txt";
+    private ArrayList<Horario> horarios = new ArrayList<>();
 
     // Construtor com as devidas verificações
     public Escola(String nome, String endereco){
@@ -23,6 +23,7 @@ public class Escola{
             throw new IllegalArgumentException(String.join("\n ", MensagensErro.getErros()));
         this.nome = nome;
         this.endereco = endereco;
+        criarHorarios();
     }
 
     // Metodo toString
@@ -31,21 +32,45 @@ public class Escola{
         return "Nome: " + nome + "\nEndereço: " + endereco;
     }
 
-    // Getts dos Arrays
+    // Gets e sets dos Arrays
     public ArrayList<Professor> getProfessores(){
         return professores;
+    }
+
+    public void setProfessores(ArrayList<Professor> professores) {
+        this.professores = professores;
     }
 
     public ArrayList<Sala> getSalas(){
         return salas;
     }
 
+    public void setSalas(ArrayList<Sala> salas) {
+        this.salas = salas;
+    }
+
     public ArrayList<Aluno> getAlunos(){
         return alunos;
     }
 
+    public void setAlunos(ArrayList<Aluno> alunos) {
+        this.alunos = alunos;
+    }
+
     public ArrayList<Turma> getTurmas(){
         return turmas;
+    }
+
+    public void setTurmas(ArrayList<Turma> turmas) {
+        this.turmas = turmas;
+    }
+
+    public ArrayList<Horario> getHorarios(){
+        return horarios;
+    }
+
+    public void setHorarios(ArrayList<Horario> horarios){
+        this.horarios = horarios;
     }
 
     // Get e set de nome com as devidas verificações
@@ -330,40 +355,389 @@ public class Escola{
             }
     }
 
-    // Metodo para alocar uma turma em uma sala
-    public void alocarTurmaEmSala(Turma turma, Sala sala){
-        if (sala.getTurmas().size() < sala.getCapacidadeSala())
-            sala.adicionarTurma(turma);
-        else{
-            MensagensErro.adicionarErro(MensagensErro.SALA_CHEIA);
-            if (!MensagensErro.getErros().isEmpty())
-                throw new IllegalArgumentException(String.join(" ", MensagensErro.getErros()));
-            MensagensErro.limparErros();
+    // Metodo para alocar turma em sala
+    public void alocarTurmaEmSala(){
+        Scanner input = new Scanner(System.in);
+        int opcao;
+
+        System.out.println("\n\tAlocação de Turmas em Salas");
+
+        listarTurmas();
+        System.out.print("\nEscolha a turma para alocar (Insira o número): ");
+        int turmaId = input.nextInt() - 1;
+
+        if (turmaId < 0 || turmaId >= turmas.size()){
+            System.out.println("Opção Inválida!");
+            return;
         }
+        Turma turmaSelecionada = turmas.get(turmaId);
+
+        if (turmaSelecionada.getSala() != null){
+            System.out.println("\nA turma já está alocada em uma sala.");
+            return;
+        }
+
+        listarSalas();
+        System.out.print("\nEscolha a sala para alocar a turma (Insira o número): ");
+        int salaId = input.nextInt() - 1;
+
+        // Verificar se a sala escolhida é válida
+        if (salaId < 0 || salaId >= salas.size()){
+            System.out.println("Opção Inválida!");
+            return;
+        }
+        Sala salaSelecionada = salas.get(salaId);
+
+        turmaSelecionada.setSala(salaSelecionada);
+        salaSelecionada.setNumeroDeTurmas(salaSelecionada.getNumeroDeTurmas() + 1);
+
+        System.out.println("\nTurma alocada!");
+        Main.salvarEscolas();
     }
 
     // Metodo para alocar aluno em turma
-    public void alocarAlunoEmTurma(Aluno aluno, Turma turma) {
-        if (turma.getSala().getCapacidadeSala() > turma.getAlunos().size()) {
-            aluno.adicionarTurma(turma);  // Adiciona a turma ao aluno e o aluno à turma
+    public void alocarAlunoEmTurma(){
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("\n\tAlocação de Alunos em Turmas");
+
+        listarAlunos();
+        System.out.print("\nEscolha o aluno para alocar (Insira o número): ");
+        int alunoId = input.nextInt() - 1;
+
+        if (alunoId < 0 || alunoId >= alunos.size()){
+            System.out.println("Opção Inválida!");
+            return;
         }
-        else{
-            MensagensErro.adicionarErro(MensagensErro.SALA_ERRO);
-            if (!MensagensErro.getErros().isEmpty())
-                throw new IllegalArgumentException(String.join(" ", MensagensErro.getErros()));
-            MensagensErro.limparErros();
+        Aluno alunoSelecionado = alunos.get(alunoId);
+
+        if (alunoSelecionado.getTurmas().size() > 0){
+            System.out.println("\nO aluno já está alocado em uma turma.");
+            return;
+        }
+
+        listarTurmas();
+        System.out.print("\nEscolha a turma para alocar o aluno (Insira o número): ");
+        int turmaId = input.nextInt() - 1;
+
+        if(turmaId < 0 || turmaId >= turmas.size()){
+            System.out.println("Opção Inválida!");
+            return;
+        }
+        Turma turmaSelecionada = turmas.get(turmaId);
+
+        Sala salaDaTurma = turmaSelecionada.getSala();
+        if(salaDaTurma == null){
+            System.out.println("\nA turma selecionada não está alocada em nenhuma sala.");
+            return;
+        }
+
+        int capacidadeAtual = turmaSelecionada.getAlunos().size();
+        if(capacidadeAtual >= salaDaTurma.getCapacidadeSala()){
+            System.out.println("\nA sala da turma não tem capacidade suficiente.");
+            return;
+        }
+
+        turmaSelecionada.adicionarAluno(alunoSelecionado);
+        alunoSelecionado.adicionarTurma(turmaSelecionada);
+        turmaSelecionada.setNumeroAlunos(turmaSelecionada.getNumeroAlunos() + 1);
+
+        System.out.println("\nAluno alocado com sucesso!");
+        Main.salvarEscolas();
+    }
+
+    // Metodo para alocar professor em turma
+    public void alocarProfessorEmTurma(){
+        Scanner input = new Scanner(System.in);
+        int opcao;
+
+        System.out.println("\n\tAlocação de Professores em Turmas");
+
+        listarProfessores();
+        System.out.print("\nEscolha o professor para alocar (Insira o número): ");
+        int professorId = input.nextInt() - 1;
+
+        if (professorId < 0 || professorId >= professores.size()){
+            System.out.println("Opção Inválida!");
+            return;
+        }
+        Professor professorSelecionado = professores.get(professorId);
+
+        listarTurmas();
+        System.out.print("\nEscolha a turma para alocar o professor (Insira o número): ");
+        int turmaId = input.nextInt() - 1;
+
+        if (turmaId < 0 || turmaId >= turmas.size()) {
+            System.out.println("Opção Inválida!");
+            return;
+        }
+        Turma turmaSelecionada = turmas.get(turmaId);
+
+        if (turmaSelecionada.getProfessor() != null){
+            System.out.println("\nA turma já tem um professor alocado.");
+            return;
+        }
+
+        turmaSelecionada.setProfessor(professorSelecionado);
+        professorSelecionado.setNumeroAulasMinistradas(professorSelecionado.getNumeroAulasMinistradas() + 1);
+
+        System.out.println("\nProfessor alocado com sucesso!");
+        Main.salvarEscolas();
+    }
+
+    // Metodo para listar as alocacoes
+    public void listarAlocacoes(){
+        System.out.println("\n\tListagem de Alocações");
+
+        if (turmas.isEmpty()){
+            System.out.println("Nenhuma turma foi criada.");
+            return;
+        }
+
+        for (Turma turma : turmas){
+            System.out.println("\nTurma: " + turma.getCurso() + " Ano: " + turma.getAnoTurma());
+
+            Sala salaAlocada = turma.getSala();
+            if (salaAlocada != null)
+                System.out.println("Sala: " + salaAlocada.getNumero() + " (Capacidade: " + salaAlocada.getCapacidadeSala() + ")");
+            else
+                System.out.println("Sala: Não alocada");
+
+            Professor professorAlocado = turma.getProfessor();
+            if (professorAlocado != null)
+                System.out.println("Professor: " + professorAlocado.getNome());
+            else
+                System.out.println("Professor: Não alocado");
+
+            ArrayList<Aluno> alunosAlocados = turma.getAlunos();
+            if (!alunosAlocados.isEmpty()){
+                System.out.println("Alunos:");
+                for (Aluno aluno : alunosAlocados)
+                    System.out.println("Nome: " + aluno.getNome());
+            }
+            else
+                System.out.println("Alunos: Nenhum aluno alocado");
+
+            ArrayList<Horario> horariosAlocados = turma.getHorarios();
+            if (horariosAlocados != null && !horariosAlocados.isEmpty()) {
+                System.out.println("Horários:");
+                for (Horario horario : horariosAlocados){
+                    System.out.println(horario);
+                }
+            } else {
+                System.out.println("Horários: Nenhum horário alocado");
+            }
         }
     }
 
-    // Metodo para alocar um professor a uma turma
-    public void alocarProfessorEmTurma(Professor professor, Turma turma){
-        if (turma.getProfessor() == null)
-            professor.adicionarTurma(turma);
-        else{
-            MensagensErro.adicionarErro(MensagensErro.TURMA_PROFESSOR);
-            if (!MensagensErro.getErros().isEmpty())
-                throw new IllegalArgumentException(String.join(" ", MensagensErro.getErros()));
-            MensagensErro.limparErros();
+    // Metodo para alocar horário a turma
+    public void alocarHorarioTurma(){
+        Scanner input = new Scanner(System.in);
+
+        listarTurmas();
+        System.out.print("\nEscolha a turma para alocar horários (Insira o número): ");
+        int turmaId = input.nextInt() - 1;
+
+        if (turmaId < 0 || turmaId >= turmas.size()) {
+            System.out.println("Opção inválida!");
+            return;
         }
+        Turma turmaSelecionada = turmas.get(turmaId);
+
+        listarHorariosDisponiveis();
+        System.out.print("\nEscolha o horário para alocar à turma (Insira o número): ");
+        int horarioId = input.nextInt() - 1;
+
+        if (horarioId < 0 || horarioId >= horarios.size()) {
+            System.out.println("Opção inválida!");
+            return;
+        }
+        Horario horarioSelecionado = horarios.get(horarioId);
+
+        if (turmaSelecionada.getHorarios().contains(horarioSelecionado)) {
+            System.out.println("\nEsse horário já está alocado para essa turma.");
+            return;
+        }
+
+        turmaSelecionada.getHorarios().add(horarioSelecionado);
+        System.out.println("\nHorário alocado com sucesso!");
+
+        Main.salvarEscolas();
+    }
+
+
+    // Metodo para listar horários
+    public void listarHorariosDisponiveis() {
+        System.out.println("\nHorários Disponíveis:");
+
+        boolean todosAlocados = true;
+        int count = 1;
+
+        // Cria um conjunto para armazenar os horários alocados e verificar se estão disponíveis
+        ArrayList<Horario> horariosAlocados = new ArrayList<>();
+        for (Turma turma : turmas) {
+            horariosAlocados.addAll(turma.getHorarios());
+        }
+
+        // Lista todos os horários e verifica se estão alocados
+        for (Horario horario : horarios) {
+            boolean horarioAlocado = horariosAlocados.contains(horario);
+
+            if (!horarioAlocado) {
+                System.out.println(count + ". " + horario.getDiaDaSemana() + " - " + horario.getHoraInicio() + " às " + horario.getHoraFim());
+                count++;
+                todosAlocados = false;
+            }
+        }
+
+        if (todosAlocados) {
+            System.out.println("\nTodos os horários já foram alocados.");
+        }
+    }
+
+    public void criarHorarios() {
+        String[] diasDaSemana = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"};
+        int horaInicioMin = 7;
+        int horaFimMax = 24;
+        int intervalo = 2; // Intervalo de tempo entre os horários
+
+        for (String dia : diasDaSemana) {
+            for (int horaInicio = horaInicioMin; horaInicio < horaFimMax; horaInicio += intervalo) {
+                int horaFim = horaInicio + intervalo;
+
+                if (horaFim > horaFimMax)
+                    continue;
+
+                if (horaFim <= horaInicio) {
+                    System.out.println("Hora de fim deve ser maior que hora de início.");
+                    continue;
+                }
+                Horario horario = new Horario(horaInicio, horaFim, dia);
+                horarios.add(horario);
+            }
+        }
+
+        Main.salvarEscolas();
+    }
+
+
+
+    //  Metodo para remover turma
+    public void removerTurma(){
+        Scanner input = new Scanner(System.in);
+
+        listarTurmas();
+        System.out.print("\nEscolha a turma para deletar (Insira o número): ");
+        int turmaId = input.nextInt() - 1;
+
+        if (turmaId < 0 || turmaId >= turmas.size()) {
+            System.out.println("Opção Inválida!");
+            return;
+        }
+
+        Turma turmaRemover = turmas.get(turmaId);
+
+        Professor professor = turmaRemover.getProfessor();
+        if (professor != null) {
+            professor.setNumeroAulasMinistradas(professor.getNumeroAulasMinistradas() - 1);
+            turmaRemover.setProfessor(null);
+        }
+
+        ArrayList<Aluno> alunosTurma = turmaRemover.getAlunos();
+        for (Aluno aluno : alunosTurma){
+            aluno.getTurmas().remove(turmaRemover);
+            aluno.setNumeroAlunos(alunos.size());
+        }
+
+        Sala sala = turmaRemover.getSala();
+        if (sala != null){
+            sala.setNumeroDeTurmas(sala.getNumeroDeTurmas() - 1);
+            turmaRemover.setSala(null);
+        }
+
+        turmas.remove(turmaId);
+        System.out.println("\nTurma removida com sucesso!");
+
+        Main.salvarEscolas();
+    }
+
+    // Metodo para remover aluno
+    public void removerAluno(){
+        Scanner input = new Scanner(System.in);
+
+        listarAlunos();
+        System.out.print("\nEscolha o aluno para deletar (Insira o número): ");
+        int alunoId = input.nextInt() - 1;
+
+        if (alunoId < 0 || alunoId >= turmas.size()) {
+            System.out.println("Opção Inválida!");
+            return;
+        }
+
+        Aluno alunoRemover = alunos.get(alunoId);
+
+        ArrayList<Turma> turmasAluno = alunoRemover.getTurmas();
+        for (Turma turma : turmasAluno) {
+            turma.getAlunos().remove(alunoRemover);
+            turma.setNumeroAlunos(turma.getNumeroAlunos() - 1);
+        }
+
+        alunos.remove(alunoId);
+        System.out.println("\nAluno removido com sucesso!");
+
+        Main.salvarEscolas();
+    }
+
+    // Metodo para remover professor
+    public void removerProfessor(){
+        Scanner input = new Scanner(System.in);
+
+        listarProfessores();
+        System.out.print("\nEscolha o professor para deletar (Insira o número): ");
+        int professorId = input.nextInt() - 1;
+
+        if (professorId < 0 || professorId >= turmas.size()) {
+            System.out.println("Opção Inválida!");
+            return;
+        }
+        Professor professorRemover = professores.get(professorId);
+
+        for (Turma turma : turmas) {
+            if (turma.getProfessor() == professorRemover) {
+                turma.setProfessor(null);
+            }
+        }
+
+        professores.remove(professorId);
+        System.out.println("\nProfessor removido com sucesso!");
+
+        Main.salvarEscolas();
+    }
+
+    // Metodo para remover sala
+    public void removerSala(){
+        Scanner input = new Scanner(System.in);
+
+        listarSalas();
+        System.out.print("\nEscolha a sala para deletar (Insira o número): ");
+        int salaId = input.nextInt() - 1;
+
+        if (salaId < 0 || salaId >= turmas.size()){
+            System.out.println("Opção Inválida!");
+            return;
+        }
+        Sala salaRemover = salas.get(salaId);
+
+        for (Turma turma : turmas){
+            if (turma.getSala() == salaRemover) {
+                turma.setSala(null);
+                salaRemover.setNumeroDeTurmas(salaRemover.getNumeroDeTurmas() - 1);
+            }
+        }
+
+        salas.remove(salaId);
+        System.out.println("\nSala removida com sucesso!");
+
+        Main.salvarEscolas();
     }
 }

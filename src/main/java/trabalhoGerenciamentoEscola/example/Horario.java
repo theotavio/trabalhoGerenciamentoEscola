@@ -46,11 +46,7 @@ public class Horario{
         return diaSemana;
     }
 
-    /*
-     Metodo para preencher o HashMap
-     Entrada: Nenhuma
-     Saída: Nenhuma
-    */
+    // Metodo para preencher o Hash Map
     private void preencherMapDiaSemana(){
         diaSemana.put(1, "Domingo");
         diaSemana.put(2, "Segunda-feira");
@@ -61,11 +57,14 @@ public class Horario{
         diaSemana.put(7, "Sábado");
     }
 
-    /*
-    Metodo para calcular o tempo de aula em minutos
-    Entrada: Nenhuma
-    Saída: tempo em minutos
-    */
-    public void TempoDeAulaMinutos(){
+    // Metodo para mostrar o tempo de aula em minutos
+    public int TempoDeAulaMinutos(){
+        return (horaFim - horaInicio) * 60;
+    }
+
+    // Metodo to String
+    @Override
+    public String toString() {
+        return horaInicio + " - " + horaFim + " (" + diaDaSemana + ")" + "\nTempo de aula: " + TempoDeAulaMinutos();
     }
 }

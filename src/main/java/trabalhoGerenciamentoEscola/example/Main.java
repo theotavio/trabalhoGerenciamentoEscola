@@ -35,8 +35,8 @@ public class Main{
                     removerEscola();
                     break;
                 case 4:
-                    System.out.println("Saindo...");
-                    System.exit(0);
+                    System.out.println("Encerrando o programa");
+                    return;
                 default:
                     System.out.println("Opção Inválida!");
                     break;
@@ -153,7 +153,7 @@ public class Main{
             opcao = input.nextInt();
             opcoesGerenciamento(escola, opcao);
         }
-        while(opcao != 7 && opcao != 8);
+        while(opcao != 9 && opcao != 10);
     }
 
     // Metodo para mostrar o menu de gerenciamento de uma escola especifica
@@ -205,8 +205,8 @@ public class Main{
                 menuPrincipal();
                 break;
             case 10:
-                System.out.println("Saindo...");
-                System.exit(0);
+                System.out.println("Encerrando o programa");
+                return;
             default:
                 System.out.println("\nOpção Inválida\n");
                 break;
@@ -232,9 +232,10 @@ public class Main{
         System.out.println("\n1 - Alocar Turma em sala.");
         System.out.println("2 - Alocar Aluno em Turma");
         System.out.println("3 - Alocar Professor em Turma.");
-        System.out.println("4 - Listar Alocações");
-        System.out.println("5 - Voltar ao menu anterior");
-        System.out.println("6 - Sair");
+        System.out.println("4 - Alocar Horário.");
+        System.out.println("5 - Listar Alocações");
+        System.out.println("6 - Voltar ao menu anterior");
+        System.out.println("7 - Sair");
         System.out.print("\nEscolha uma opção: ");
     }
 
@@ -242,132 +243,31 @@ public class Main{
     private static void opcoesAlocacao(Escola escola, int opcao){
         switch(opcao){
             case 1:
-                Scanner input = new Scanner(System.in);
-                alocarTurmaEmSala(escola);
+                escola.alocarTurmaEmSala();
                 break;
             case 2:
-                alocarAlunoEmTurma(escola);
+                escola.alocarAlunoEmTurma();
                 break;
             case 3:
-                alocarProfessorEmTurma(escola);
+                escola.alocarProfessorEmTurma();
                 break;
             case 4:
+                escola.alocarHorarioTurma();
                 break;
             case 5:
-                menuGerenciamentoEscola(escola);
+                escola.listarAlocacoes();
                 break;
             case 6:
-                System.out.println("Saindo...");
-                System.exit(0);
+                menuGerenciamentoEscola(escola);
+                break;
+            case 7:
+                System.out.println("Encerrando o programa");
+                return;
             default:
                 System.out.println("Opção Inválida!");
                 break;
         }
     }
-
-    private static void alocarTurmaEmSala(Escola escola){
-        Scanner input = new Scanner(System.in);
-        ArrayList<Turma> turmas = escola.getTurmas();
-
-        escola.listarTurmas();
-
-        System.out.print("\nEscolha uma turma para alocar em uma sala:");
-        int indiceTurma = input.nextInt() - 1;
-
-        if (indiceTurma < 0 || indiceTurma >= turmas.size()){
-            System.out.println("Opção Inválida.");
-            return;
-        }
-
-        Turma turmaSelecionada = turmas.get(indiceTurma);
-
-        ArrayList<Sala> salas = escola.getSalas();
-
-        escola.listarSalas();
-
-        System.out.print("\nEscolha uma sala para alocar a turma:");
-        int indiceSala = input.nextInt();
-
-        if (indiceSala < 0 || indiceSala >= salas.size()){
-            System.out.println("Opção Inválida.");
-            return;
-        }
-
-        Sala salaSelecionada = salas.get(indiceSala);
-        escola.alocarTurmaEmSala(turmaSelecionada, salaSelecionada);
-    }
-
-    private static void alocarAlunoEmTurma(Escola escola){
-        Scanner input = new Scanner(System.in);
-        ArrayList<Aluno> alunos = escola.getAlunos();
-
-        escola.listarAlunos();
-
-        System.out.print("\nEscolha um aluno para alocar em uma turma:");
-        int indiceAluno = input.nextInt();
-
-        if (indiceAluno < 0 || indiceAluno >= alunos.size()){
-            System.out.println("Opção Inválida.");
-            return;
-        }
-
-        Aluno alunoSelecionado = alunos.get(indiceAluno);
-
-        ArrayList<Turma> turmas = escola.getTurmas();
-
-        escola.listarTurmas();
-
-        if (turmas.isEmpty()){
-            System.out.println("Não há turmas cadastradas.");
-            return;
-        }
-
-        System.out.print("\nEscolha uma turma para alocar o aluno:");
-        int indiceTurma = input.nextInt();
-
-        if (indiceTurma < 0 || indiceTurma >= turmas.size()) {
-            System.out.println("Opção Inválida.");
-            return;
-        }
-
-        Turma turmaSelecionada = turmas.get(indiceTurma);
-        escola.alocarAlunoEmTurma(alunoSelecionado, turmaSelecionada);
-    }
-
-    private static void alocarProfessorEmTurma(Escola escola){
-        Scanner input = new Scanner(System.in);
-        ArrayList<Professor> professores = escola.getProfessores();
-
-        escola.listarProfessores();
-
-        System.out.print("\nEscolha um professor para alocar em uma turma:");
-        int indiceProfessor = input.nextInt();
-
-        if (indiceProfessor < 0 || indiceProfessor >= professores.size()){
-            System.out.println("Opção Inválida.");
-            return;
-        }
-
-        Professor professorSelecionado = professores.get(indiceProfessor);
-
-        ArrayList<Turma> turmas = escola.getTurmas();
-
-        escola.listarTurmas();
-
-        System.out.print("\nEscolha uma turma para alocar o professor:");
-        int indiceTurma = input.nextInt();
-
-        if (indiceTurma < 0 || indiceTurma >= turmas.size()){
-            System.out.println("Opção Inválida.");
-            return;
-        }
-
-        Turma turmaSelecionada = turmas.get(indiceTurma);
-
-        // Agora aloca o professor na turma selecionada chamando o método da escola
-        escola.alocarProfessorEmTurma(professorSelecionado, turmaSelecionada);
-    }
-
 
     // Metodo para mostrar o menu de remoção de uma escola específica
     private static void menuRemocao(Escola escola){
@@ -379,7 +279,7 @@ public class Main{
             opcao = input.nextInt();
             opcoesRemocao(escola, opcao);
         }
-        while (opcao != 4 && opcao != 5);
+        while (opcao != 5 && opcao != 6);
     }
 
     // Metodo para mostrar o menu de remoção de uma escola específica
@@ -398,65 +298,46 @@ public class Main{
     private static void opcoesRemocao(Escola escola, int opcao){
         switch(opcao){
             case 1:
-                removerItem("Professor", escola.getProfessores());
+                escola.removerProfessor();
                 break;
             case 2:
-                removerItem("Sala", escola.getSalas());
+                escola.removerSala();
                 break;
             case 3:
-                removerItem("Aluno", escola.getAlunos());
+                escola.removerAluno();
                 break;
             case 4:
-                removerItem("Turma", escola.getTurmas());
+                escola.removerTurma();
                 break;
             case 5:
                 menuGerenciamentoEscola(escola);
                 break;
             case 6:
-                System.out.println("Saindo...");
-                System.exit(0);
+                System.out.println("Encerrando o programa");
+                return;
             default:
-                System.out.println("Opção Inválida!");
+                    System.out.println("Opção Inválida!");
                 break;
         }
     }
 
-    // Metodo para remover um item
-    private static <T> void removerItem(String tipo, ArrayList<T> lista){
-        Scanner input = new Scanner(System.in);
-
-        listarItens(tipo, lista);
-
-        System.out.print("\nEscolha o " + tipo + " para remover: ");
-        int opcao = input.nextInt();
-
-        if(opcao >= 1 && opcao <= lista.size()){
-            lista.remove(opcao - 1);
-            System.out.println("\n" + tipo + " removido.");
-            salvarEscolas();
-        }
-        else
-            System.out.println("Opção Inválida!");
-    }
-
-    // Metodo para listar os itens
-    private static <T> void listarItens(String tipo, ArrayList<T> lista){
-        System.out.println("\nLista de " + tipo + "s:");
-        for(int i = 0; i < lista.size(); i++)
-            System.out.println("\n" + tipo + "[" + (i + 1) + "]\n" + lista.get(i));
-    }
-
-    // Metodoget do array de escolas
+    // Metodo get do array de escolas
     public static ArrayList<Escola> getEscolas(){
         return escolas;
     }
+
+    // Metodo para alocar horários às turmas
+    private static void alocarHorarios(Escola escola) {
+        escola.alocarHorarioTurma();
+    }
+
 
     // Metodos para salvar os dados no arquivo "Escolas.txt"
     protected static void salvarEscolas(){
         ArquivoInfo.salvarInfoEscolas(escolas, ARQUIVO_ESCOLAS);
     }
 
-    private static void carregarEscolas(){
+    protected static void carregarEscolas(){
         File file = new File(ARQUIVO_ESCOLAS);
         if(file.exists())
             escolas.addAll(ArquivoInfo.carregarInfoEscolas(ARQUIVO_ESCOLAS));

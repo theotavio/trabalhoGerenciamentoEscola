@@ -18,9 +18,6 @@ public final class MensagensErro{
     public static final String ANO_TURMA = "O ano da turma não pode ser menor ou igual a zero";
     public static final String CURSO_VAZIO = "O campo curso precisa ser preenchido.";
     public static final String CAPACIDADE_SALA = "A capacidade da sala excedida.";
-    public static final String SALA_CHEIA = "A sala está cheia";
-    public static final String SALA_ERRO = "Sala lotada ou aluno já matrículado";
-    public static final String TURMA_PROFESSOR = "A turma já possui um professor.";
 
     // Construtor privado para garantir que nenhuma instância seja criada
     private MensagensErro(){}

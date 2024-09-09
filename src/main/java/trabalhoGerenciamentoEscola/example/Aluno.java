@@ -6,7 +6,7 @@ public class Aluno extends Pessoa {
     private int matricula;
     private int idade;
     private int numeroAlunos;
-    private ArrayList<Turma> turmas;
+    private ArrayList<Turma> turmas = new ArrayList<>();
 
     // Construtor com as devidas verificações
     public Aluno(String nome, String cpf, int matricula, int idade) {
@@ -20,7 +20,6 @@ public class Aluno extends Pessoa {
             throw new IllegalArgumentException(String.join("\n ", MensagensErro.getErros()));
         this.matricula = matricula;
         this.idade = idade;
-        this.turmas = new ArrayList<>();
     }
 
     // Metodo toString
@@ -71,16 +70,17 @@ public class Aluno extends Pessoa {
         return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
     }
 
-    // Metodo para associar uma turma ao aluno
-    public void adicionarTurma(Turma turma){
-        if (!turmas.contains(turma)) {
-            turmas.add(turma);
-            turma.adicionarAluno(this);  // Atualiza a turma para incluir o aluno
-        }
+    // Get e set de turmas
+    public ArrayList<Turma> getTurmas() {
+        return turmas;
     }
 
-    // Get do array de turmas
-    public ArrayList<Turma> getTurmas(){
-        return turmas;
+    public void setTurmas(ArrayList<Turma> turmas) {
+        this.turmas = turmas;
+    }
+
+    // Metodo para adicionar turmas
+    public void adicionarTurma(Turma turma){
+        turmas.add(turma);
     }
 }

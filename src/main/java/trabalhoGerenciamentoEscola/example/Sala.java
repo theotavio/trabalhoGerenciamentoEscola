@@ -6,8 +6,7 @@ public class Sala{
     private int numero;
     private int capacidadeSala;
     private int numeroDeTurmas;
-    private int numeroSalas;
-    private ArrayList<Turma> turmas;
+    private int numeroSalas;;
 
     // Construtor com as devidas verificações
     public Sala(int numero, int capacidadeSala){
@@ -20,13 +19,12 @@ public class Sala{
             throw new IllegalArgumentException(String.join("\n ", MensagensErro.getErros()));
         this.numero = numero;
         this.capacidadeSala = capacidadeSala;
-        this.turmas = new ArrayList<>();
     }
 
     // Metodo toString
     @Override
     public String toString(){
-        return "Número: " + numero + "\nCapacidade: " + capacidadeSala + "\nTurmas: " + numeroDeTurmas;
+        return "Número: " + numero + "\nCapacidade: " + capacidadeSala + "\nTurmas: " + getNumeroDeTurmas();
     }
 
     // Get e set do numero da sala  com as devidas verificações
@@ -73,25 +71,5 @@ public class Sala{
 
     public void setNumeroSalas(int numeroSalas){
         this.numeroSalas = numeroSalas;
-    }
-
-    // Metodo para adicionar turmas a sala
-    public void adicionarTurma(Turma turma){
-        if(turmas.size() < capacidadeSala){
-            turmas.add(turma);
-            turma.setSala(this);
-            this.numeroDeTurmas++;
-        }
-        else{
-            MensagensErro.adicionarErro(MensagensErro.CAPACIDADE_SALA);
-            if (!MensagensErro.getErros().isEmpty())
-                throw new IllegalArgumentException(String.join("\n ", MensagensErro.getErros()));
-            MensagensErro.limparErros();
-        }
-    }
-
-    // Get do array de turmas
-    public ArrayList<Turma> getTurmas(){
-        return turmas;
     }
 }

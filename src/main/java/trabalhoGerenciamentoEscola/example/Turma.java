@@ -8,8 +8,8 @@ public class Turma{
     private int numeroAlunos;
     private Sala sala;
     private Professor professor;
-    private ArrayList<Aluno> alunos;
-    private ArrayList<Horario> horarios = new ArrayList<>();
+    private ArrayList<Aluno> alunos = new ArrayList<>();
+    private ArrayList<Horario> horarios =  new ArrayList<>();
 
     // Construtor
     public Turma(String curso, int anoTurma){
@@ -24,7 +24,6 @@ public class Turma{
 
         this.curso = curso;
         this.anoTurma = anoTurma;
-        this.alunos = new ArrayList<>();
     }
 
     // Getters e Setters
@@ -60,7 +59,7 @@ public class Turma{
 
     @Override
     public String toString() {
-        return "Curso: " + getCurso() + "\nAno: " + getAnoTurma() + "\nNumero de Alunos: " + getNumeroAlunos();
+        return "Curso: " + getCurso() + "\nAno: " + getAnoTurma() + "\nNumero de Alunos: " + getNumeroAlunos() + "\nTempo de aula por semana: " + tempoAulaSemanaMinutos();
     }
 
 
@@ -73,52 +72,52 @@ public class Turma{
     }
 
     // Metodo para calcular o tempo de aula semanal em minutos
-    public void TempoAulaSemanaMinutos(){
+    public int tempoAulaSemanaMinutos(){
+        int totalMinutos = 0;
+        for (Horario horario : horarios) {
+            totalMinutos += horario.TempoDeAulaMinutos();
+        }
+        return totalMinutos;
     }
 
-    // Metodo e get de horário
-    public void adicionarHorario(Horario horario){
-        horarios.add(horario);
+    // Get e set de sala
+    public Sala getSala(){
+        return sala;
     }
 
-    public ArrayList<Horario> getHorarios(){
-        return horarios;
-    }
-
-    // Set e get de sala
     public void setSala(Sala sala){
         this.sala = sala;
     }
 
-    public Sala getSala(){
-        return  sala;
+    // Get e set de aluno
+    public ArrayList<Aluno> getAlunos(){
+        return alunos;
     }
 
-    // Set e get de professor
-    public void setProfessor(Professor professor){
-        this.professor = professor;
+    public void setAlunos(ArrayList<Aluno> alunos){
+        this.alunos = alunos;
     }
 
+    // Metodo para adicionar os alunos
+    public void adicionarAluno(Aluno aluno){
+        alunos.add(aluno);
+    }
+
+    // Get e set de professor
     public Professor getProfessor(){
         return professor;
     }
 
-    // Metodo para adicionar aluno a turma
-    public void adicionarAluno(Aluno aluno){
-        if (!alunos.contains(aluno) && sala.getCapacidadeSala() > numeroAlunos){
-            alunos.add(aluno);
-            numeroAlunos++;
-        }
-        else{
-            MensagensErro.adicionarErro(MensagensErro.SALA_ERRO);
-            if (!MensagensErro.getErros().isEmpty())
-                throw new IllegalArgumentException(String.join(" ", MensagensErro.getErros()));
-            MensagensErro.limparErros();
-        }
+    public void setProfessor(Professor professor){
+        this.professor = professor;
     }
 
-    // Get do array de alunos
-    public ArrayList<Aluno> getAlunos(){
-        return alunos;
+    // Get e set de horarios
+    public ArrayList<Horario> getHorarios(){
+        return horarios;
+    }
+
+    public void setHorarios(ArrayList<Horario> horarios){
+        this.horarios = horarios;
     }
 }
